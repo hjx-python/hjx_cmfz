@@ -1,0 +1,142 @@
+<script>
+
+    $(function () {
+        $('#bannerTable').jqGrid({
+            url: "",
+            datatype: "json",
+            autowidth: true,
+            pager: "bannerPagerNew",
+            viewrecords: true,
+            rownumbers: true,
+            rowNum: 3,
+            rowList: [3, 6, 10],
+            styleUI: "Bootstrap",
+            colNames: ["ID", "标题", "状态", "创建时间", "图片", "操作"],
+            colModel: [
+                {name: "id"},
+                {name: "title"},
+                {name: "status"},
+                {name: "create_time"},
+                // 回显图片
+                {
+                    name: "pic", formatter: function (cellvalue, options, rowObject) {
+                        return "<img style='height: width:' src='/static/'+  cellvalue>";
+                    }
+                },
+                {
+                    name: "option", formatter: function (cellvalue, options, rowObject) {
+                        var content = "<button class=\"btn btn-danger\"><span class=\"glyphicon glyphicon-edit\"></span> 删除</button>";
+                        return content;
+                    }
+                },
+            ],
+        });
+
+        // 点击模态框的保存按钮  将轮播图的信息发送到后台进行保存
+        $("#save").click(function () {
+
+            // 通过formdata完成文件上传
+            var title = $("#upload_title").val();
+            var status = $("#upload_status").val();
+            var pic = $("#upload_pic")[0].files[0];
+
+            var formData = new FormData;
+
+            formData.append('title', title);
+            formData.append('status', status);
+            formData.append('pic', pic);
+
+            $.ajax({
+                url: "/main/add_banner/",
+                datatype: "json",
+                type: "post",
+                //  如何获取当前表单的数据
+                data: formData,
+                async: false,
+                contentType: false,     // 不设置contenttype请求头
+                processData: false,     // 使数据不做处理
+                success: function (data) {
+                    // 根据返回值判断是否上传成功，上传成功隐藏模态框
+
+                }
+            });
+        });
+
+    })
+
+</script>
+
+
+<div class="page-header">
+    <h2>轮播图管理</h2>
+</div>
+<ul class="nav nav-tabs ">
+    <li class="active"><a href="#"><b>轮播图信息</b></a></li>
+</ul>
+
+<div class="panel panel-default" style="padding: 40px">
+    <!-- jqgrid表格的容器 -->
+    <table id="bannerTable"></table>
+    <div class="alert alert-success" role="alert" id="addBannerMsg" style="display: none">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <strong id="msgShow"></strong>
+    </div>
+    <div id="bannerPagerNew" style="width: auto;height: 50px"></div>
+    <!--模态框的打开方式  可以使用modal方法打开 也可以通过指定data-target与data-toggle两个属性来打开指定的模态框 -->
+    <button class="btn btn-primary" data-aa="@456" data-whatever="@123" id="btn" data-toggle="modal"
+            data-target="#myModal">添加
+    </button>
+    <button class="btn btn-warning" id="edit"><span class="glyphicon glyphicon-edit"></span> 修改</button>
+    <button class="btn btn-danger" id="del">删除</button>
+</div>
+
+
+<body>
+<!--静态模态框-->
+<div class="modal fade" tabindex="-1" data-backdrop="false" role="dialog" id="myModal">
+    <div class="modal-dialog">
+        <!--模态框内容-->
+        <div class="modal-content">
+            <!--模态框标题-->
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">编辑轮播图</h4>
+            </div>
+            <!--模态框内容体-->
+            <form action="" id="bannerForm">
+                <div class="modal-body form-horizontal">
+                    <div class="form-group ">
+                        <label class="col-sm-2 control-label">标题：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="title" id="upload_title" class="form-control"
+                                   placeholder="请输入图片标题">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label class="col-sm-2 control-label">状态：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="status" id="upload_status" class="form-control"
+                                   placeholder="请选择文件状态">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label class="col-sm-2 control-label">图片：</label>
+                        <div class="col-sm-10">
+                            <input type="file" name="pic" id="upload_pic" class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="save">保存</button>
+                <button type="button" class="btn btn-warning" id="save" data-dismiss="modal">取消</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</body>
