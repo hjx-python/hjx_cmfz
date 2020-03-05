@@ -19,4 +19,5 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hjx_cmfz/',include('hjx_app.urls')),
+    path('banner/',include('bannerapp.urls')),
 ]
