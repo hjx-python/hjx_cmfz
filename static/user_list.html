@@ -1,0 +1,48 @@
+<h1>用户列表展示</h1>
+
+<table id="user_table"></table>
+<div id="pager"></div>
+
+
+<script>
+    $('#user_table').jqGrid({
+        url:"/manage_system/show_userlist",
+        datatype:"json",
+        autowidth:true,
+        cellEdit:true,
+        pager:"#pager",
+        rowNum:4,
+        rowList:['1','2','3','4'],
+        viewrecords: true,
+        editurl:"/manage_system/update/",
+        colNames:["ID",'用户名','手机号','性别','注册时间','所在省/直辖市','详细地址','级别','状态','头像','操作'],
+        colModel:[
+            {name:"id"},
+            {name:"username"},
+            {name:"phone"},
+            {name:"sex"},
+            {name:"create_time"},
+            {name:"province"},
+            {name:"addr"},
+            {name:"rank"},
+            {name:"status",editable:true,edittype:"select",editoptions: {value:'0:冻结;1:激活'} },
+            {name:"pic",width:"50px",formatter:function (cellvalue, options, rowObject) {
+                    return "<img style='height:50px' src='/static/"+cellvalue+"'>"
+                }},
+            {name:"operation",formatter:function (cellvalue,options,rowObject) {
+                    return "<button class='btn btn-info' onclick=changefn(" + rowObject.id + ")>" + "修改" + "</button> "
+                }},
+        ]
+    }).jqGrid("navGrid","#pager",{edit:true})
+
+    //修改函数
+    function changefn(ele) {
+        //
+        console.log(ele, '102hang');
+        $("#user_table").jqGrid('editGridRow', ele, {
+            height: 300,
+            reloadAfterSubmit: true
+        });
+    }
+
+</script>

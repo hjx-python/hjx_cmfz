@@ -1,0 +1,46 @@
+<div id="container" style="width: 600px; height: 400px;"></div>
+
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('container'));
+
+    // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '持明法洲近五周用户增长柱状图'
+            },
+            tooltip: {},
+            legend: {
+                data:['数量']
+            },
+            xAxis: {
+                data: ["前第一周","前第二周","前第三周","前第四周","前第五周","五周总和"]
+            },
+            yAxis: {},
+            series: [{
+                name: '数量',
+                type: 'bar',
+                data:[]
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        $.ajax({
+            type:"get",
+            datatype:"json",
+            url:"/manage_system/bar_list/",
+            success:function (data) {
+                myChart.setOption({
+                    series:[{
+                        name:"数量",
+                        type:"bar",
+                        data:data['result']
+                    }]
+                })
+            }
+
+        })
+
+</script>

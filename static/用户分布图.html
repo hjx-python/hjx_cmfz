@@ -1,0 +1,70 @@
+<div id="container2" style="width: 600px; height: 400px;"></div>
+<script>
+    var myChart = echarts.init(document.getElementById('container2'));
+
+    var option = {
+        title: {
+            text: '用户分布图',
+            subtext: '纯属虚构',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['总数']
+        },
+        visualMap: {
+            min: 0,
+            max: 10,
+            left: 'left',
+            top: 'bottom',
+            text: ['高', '低'],           // 文本，默认为数值文本
+            calculable: true
+        },
+        toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+    $.ajax({
+        type: 'get',
+        datatype: "json",
+        url: "/manage_system/map_data/",
+        success: function (data) {
+            myChart.setOption({
+                series: [
+                    {
+                        name: '总数',
+                        type: 'map',
+                        mapType: 'china',
+                        roam: false,
+                        label: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        data: data['result']
+                    },
+                ]
+            })
+        }
+    })
+
+</script>

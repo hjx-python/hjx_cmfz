@@ -72,3 +72,4 @@ def banner_opera(request):
         id = request.POST.get('id')
         Banner.objects.get(id=id).delete()
     return HttpResponse('ok')
+
