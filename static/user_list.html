@@ -6,7 +6,7 @@
 
 <script>
     $('#user_table').jqGrid({
-        url:"/manage_system/show_userlist",
+        url:"/hjx_cmfz/show_userlist",
         datatype:"json",
         autowidth:true,
         cellEdit:true,
@@ -14,7 +14,7 @@
         rowNum:4,
         rowList:['1','2','3','4'],
         viewrecords: true,
-        editurl:"/manage_system/update/",
+        editurl:"/hjx_cmfz/update/",
         colNames:["ID",'用户名','手机号','性别','注册时间','所在省/直辖市','详细地址','级别','状态','头像','操作'],
         colModel:[
             {name:"id"},

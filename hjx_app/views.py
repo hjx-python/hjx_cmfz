@@ -118,17 +118,22 @@ def bar_list(request):
     '''
     计算出每个星期增加的人数,按顺序放入一个列表中,返回
     '''
-    res = []
-    now = datetime.datetime.now()
-    for i in range(7,36,7):
-        delta = datetime.timedelta(days=i)
-        delta1 = datetime.timedelta(days=i-7)
-        count = len(list(User.objects.filter(create_time__gt=(now - delta).strftime("%Y-%m-%d"), create_time__lte=(now - delta1).strftime("%Y-%m-%d"))))
-        res.append(count)
+    if red.get('five_zhou'):
+        five_zhou=red.get('five_zhou').decode()
+        return JsonResponse(data={'result':five_zhou})
     else:
-        count = len(list(User.objects.filter(create_time__gt=(now - datetime.timedelta(days=35)).strftime("%Y-%m-%d"))))
-        res.append(count)
-    return JsonResponse(data={"result":res})
+        res = []
+        now = datetime.datetime.now()
+        for i in range(7,36,7):
+            delta = datetime.timedelta(days=i)
+            delta1 = datetime.timedelta(days=i-7)
+            count = len(list(User.objects.filter(create_time__gt=(now - delta).strftime("%Y-%m-%d"), create_time__lte=(now - delta1).strftime("%Y-%m-%d"))))
+            res.append(count)
+        else:
+            count = len(list(User.objects.filter(create_time__gt=(now - datetime.timedelta(days=35)).strftime("%Y-%m-%d"))))
+            res.append(count)
+        red.setex('five_zhou',24*3600,str(res))
+        return JsonResponse(data={"result":res})
 
 
 def map_data(request):
@@ -140,11 +145,16 @@ def map_data(request):
     '''
     计算出每个省市的人数,按照格式{name:省市名,value:总人数},全部放到一个列表里返回
     '''
-    data = []
-    u = list(User.objects.values("province").annotate(Count('province')))
-    print(u)
-    for i in range(len(u)):
-        # print('分组查询结果', u[i]["province"])
-        # print('分组查询结果', u[i]["province__count"])
-        data.append({"name":u[i]["province"],"value":u[i]["province__count"]})
-    return JsonResponse(data={"result":data})
+    if red.get('fenbu'):
+        fenbu=red.get('fenbu').decode()
+        return JsonResponse(data={'result':fenbu})
+    else:
+        data = []
+        u = list(User.objects.values("province").annotate(Count('province')))
+        print(u)
+        for i in range(len(u)):
+            # print('分组查询结果', u[i]["province"])
+            # print('分组查询结果', u[i]["province__count"])
+            data.append({"name":u[i]["province"],"value":u[i]["province__count"]})
+        red.setex('fenbu',24*3600,str(data))
+        return JsonResponse(data={"result":data})
